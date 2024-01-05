@@ -13,14 +13,7 @@ const Home: FC<Props> = ({}) => {
   useEffect(() => {
     executeRequest();
   }, []);
-  return (
-    <div className="bg-neutral-50">
-      {status}
-      {response?.data?.map((p) => (
-        <p>{p?._id}</p>
-      ))}
-    </div>
-  );
+  return <div className="bg-neutral-50"></div>;
 };
 
 export default Home;

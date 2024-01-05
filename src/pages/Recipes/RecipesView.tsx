@@ -3,14 +3,15 @@ import ProductService from "../../services/Product.service";
 import { useApiRequest } from "../../hooks/useApiRequest";
 import Paper from "../../components/Generics/Paper/Paper";
 import LoadingWrapper from "../../components/Loader/LoadingWrapper";
-import ProductCard from "../../components/Cards/ProductCard";
-
+import RecipeService from "../../services/Recipe.service";
+import { FaReceipt } from "react-icons/fa";
+import RecipeCard from "../../components/Cards/RecipeCard";
 type Props = {};
-const Products: FC<Props> = ({}) => {
-  const productsService = new ProductService();
+const RecipesView: FC<Props> = ({}) => {
+  const recipeService = new RecipeService();
 
   const { status, response, executeRequest } = useApiRequest(() =>
-    productsService.getAllProducts()
+    recipeService.getAllRecipes()
   );
 
   useEffect(() => {
@@ -21,7 +22,12 @@ const Products: FC<Props> = ({}) => {
       <Paper>
         <LoadingWrapper status={status} exequteRequest={executeRequest}>
           {response?.data?.data?.map((p) => (
-            <ProductCard product={p} key={p.id} />
+            <RecipeCard
+              id={p.id}
+              ingredients={p.ingredients}
+              name={p.name}
+              key={p.id}
+            />
           ))}
         </LoadingWrapper>
       </Paper>
@@ -29,4 +35,4 @@ const Products: FC<Props> = ({}) => {
   );
 };
 
-export default Products;
+export default RecipesView;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UseApiRequestStatus } from "../interfaces";
 
-interface ApiResponse<ResponseData = any> {
+export interface ApiResponse<ResponseData = any> {
   data: ResponseData | null;
   error: any | null;
 }
@@ -26,6 +26,7 @@ export function useApiRequest<ResponseData, ApiFunctionParams extends any[]>(
       const result = await apiFunction(...params);
       setResponse((state) => ({ ...state, data: result }));
       setStatus("SUCCESS");
+      return result;
     } catch (error) {
       setResponse((state) => ({ ...state, error: error }));
       setStatus("ERROR");
