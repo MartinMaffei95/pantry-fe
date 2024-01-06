@@ -11,10 +11,23 @@ import { addRecipeValidationSchema } from "./config/add-recipes-form";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { useApiRequest } from "../../hooks/useApiRequest";
 import SearchListItemProduct from "./components/ListItem/SearchListItem";
-import { Button, Input, Select } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  Select,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import { FaCheck, FaRegTrashAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import ChakraControlledSelect from "../../components/InputComponents/ChakraControlledSelect";
+import ChakraControledTextArea from "../../components/InputComponents/ChakraControledTextArea";
 type Props = {};
 const AddRecipe: FC<Props> = ({}) => {
   const productsService = new ProductService();
@@ -36,13 +49,7 @@ const AddRecipe: FC<Props> = ({}) => {
       product: "",
       productName: "",
     });
-  const [ingredients, setIngredients] = useState<RecipeIngredientsForm[]>([
-    {
-      measurement: { meassurement: "", quantity: 1 },
-      product: "",
-      productName: "",
-    },
-  ]);
+  const [ingredients, setIngredients] = useState<RecipeIngredientsForm[]>([]);
 
   const addIngredient = (
     productId: string,
@@ -85,11 +92,12 @@ const AddRecipe: FC<Props> = ({}) => {
   const initValues: AddProductForm = {
     name: "",
     type: "BASIC",
+    newStep: "",
   };
   const selectResult: <Product>(res: Product) => void = (res) => {
     console.log(res);
     preparePartialCharge(res);
-  };
+  };º
   const onSubmit = async () => {
     setLoading(true);
     try {
@@ -149,67 +157,114 @@ const AddRecipe: FC<Props> = ({}) => {
           />
           <Title>Ingredientes:</Title>
 
-          <div>
-            <div>
-              <ul>
-                {ingredients.map((ingredient) => (
-                  <li>{ingredient.product}</li>
+          <TableContainer>
+            <Table className="bg-neutral-200">
+              <Thead>
+                <Tr>
+                  <Th>Ingrediente</Th>
+                  <Th align="right" className="">
+                    Cantidad
+                  </Th>
+                  <Th>Medida.</Th>
+                  <Th></Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {ingredients?.map((ingredient) => (
+                  <Tr>
+                    <Td>{ingredient.productName} </Td>
+                    <Td>{ingredient.measurement.quantity}</Td>
+                    <Td>{ingredient.measurement.meassurement}</Td>
+                  </Tr>
                 ))}
-              </ul>
-            </div>
-            <div className="flex gap-2">
-              <SearchBar
-                onSelectResult={selectResult}
-                status={status}
-                response={response}
-                executeRequest={executeRequest}
-                ListItem={SearchListItemProduct}
-              />
-              <Input
-                className="basis-1/3 flex-grow-0"
-                onChange={(e) =>
-                  setPartialIngredient((state) => ({
-                    ...state,
-                    measurement: {
-                      ...state.measurement,
-                      quantity: +e.target.value,
-                    },
-                  }))
-                }
-                value={partialIngredient.measurement.quantity}
-                type="number"
-              />
 
-              <Select
-                className="flex-grow-0"
-                onChange={(e) =>
-                  setPartialIngredient((state) => ({
-                    ...state,
-                    measurement: {
-                      ...state.measurement,
-                      meassurement: e.target.value,
-                    },
-                  }))
-                }
-                value={partialIngredient.measurement.meassurement}
-              >
-                {options.map((opt) => (
-                  <option value={opt.value}>{opt.label}</option>
-                ))}
-              </Select>
-              <Button
-                onClick={() =>
-                  addIngredient(
-                    partialIngredient.product,
-                    partialIngredient.productName,
-                    partialIngredient.measurement.meassurement,
-                    partialIngredient.measurement.quantity
-                  )
-                }
-              >
-                <FaCheck />
-              </Button>
-            </div>
+                <Tr>
+                  <Td>
+                    <SearchBar
+                      onSelectResult={selectResult}
+                      status={status}
+                      response={response}
+                      executeRequest={executeRequest}
+                      ListItem={SearchListItemProduct}
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      onChange={(e) =>
+                        setPartialIngredient((state) => ({
+                          ...state,
+                          measurement: {
+                            ...state.measurement,
+                            quantity: +e.target.value,
+                          },
+                        }))
+                      }
+                      value={partialIngredient.measurement.quantity}
+                      type="number"
+                    />
+                  </Td>
+
+                  <Td>
+                    <Select
+                      onChange={(e) =>
+                        setPartialIngredient((state) => ({
+                          ...state,
+                          measurement: {
+                            ...state.measurement,
+                            meassurement: e.target.value,
+                          },
+                        }))
+                      }
+                      value={partialIngredient.measurement.meassurement}
+                    >
+                      {options.map((opt) => (
+                        <option value={opt.value}>{opt.label}</option>
+                      ))}
+                    </Select>
+                  </Td>
+                  <Td>
+                    <Button
+                      colorScheme="green"
+                      onClick={() =>
+                        addIngredient(
+                          partialIngredient.product,
+                          partialIngredient.productName,
+                          partialIngredient.measurement.meassurement,
+                          partialIngredient.measurement.quantity
+                        )
+                      }
+                    >
+                      <FaCheck />
+                    </Button>
+                  </Td>
+                </Tr>
+              </Tbody>
+              <Tfoot>
+                <Tr>
+                  <Th>Ingrediente</Th>
+                  <Th className="">Cantidad</Th>
+                  <Th>Medida.</Th>
+                  <Th></Th>
+                </Tr>
+              </Tfoot>
+            </Table>
+          </TableContainer>
+          <div>
+            <ChakraControledTextArea
+              label="Paso"
+              name="name"
+              value={values.newStep}
+              error={errors.newStep}
+              touched={touched.newStep}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              variant="outline"
+              borderColor={"black"}
+              background={"whiteAlpha.900"}
+            />
+          </div>
+          {/*   <div>
+            <div className="flex gap-2"></div>
 
             <h1>Nuevos ingredietnes</h1>
 
@@ -221,7 +276,7 @@ const AddRecipe: FC<Props> = ({}) => {
                 ) : null}
               </div>
             </div>
-          </div>
+          </div> */}
           {/* <div className="flex w-full justify-center items-center mt-6">
             <Button type="submit" className="w-full" colorScheme="orange">
               Guardar

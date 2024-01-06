@@ -69,7 +69,7 @@ const SearchBar: FC<Props<any>> = ({
   }, [debouncedSearch]);
 
   return (
-    <div className="relative flex-grow ">
+    <div className="relative flex-grow bg-neutral-200">
       <Input value={searchValue} name="search" onChange={handleChange} />
       {showResults ? (
         <ul className="rounded-b-lg  overflow-hidden absolute w-full bg-white left-0">
