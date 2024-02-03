@@ -18,3 +18,5 @@ export type Option = {
   value: string;
   label: string;
 };
+
+export type StyleConfig = { classNameStyle: string };

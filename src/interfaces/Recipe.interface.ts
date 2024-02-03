@@ -1,3 +1,6 @@
+import { Product } from "./Product.interface";
+import { ProductFromAPI } from ".";
+
 export interface Recipe {
   id: string;
   name: string;
@@ -29,13 +32,14 @@ export interface RecipeProduct {
   id: string;
   name: string;
   type: string;
+  resultOf?: Recipe | undefined;
 }
 
 export interface RecipePortion extends RecipeMeasurement {
   weight: number;
 }
 
-// FROM APÎ
+// ##  FROM API>
 
 export interface RecipeFromAPI {
   _id: string;
@@ -61,6 +65,7 @@ export interface RecipeProductFromAPI {
   name: string;
   type: string;
   __v: number;
+  resultOf?: RecipeFromAPI | undefined;
 }
 
 export interface RecipeMeasurementFromAPI {
@@ -76,4 +81,20 @@ export interface RecipeResultFromAPI {
 
 export interface RecipePortionFromAPI extends RecipeMeasurementFromAPI {
   weight: number;
+}
+
+// ##  NEW RECIPE FORM
+
+export interface AddRecipeForm {
+  name: string;
+  ingredients: {
+    product: string;
+    measurement: RecipeMeasurement;
+  }[];
+  steps: string[];
+  result: {
+    product: string;
+    yield: RecipeMeasurement;
+    portion: RecipePortion;
+  };
 }

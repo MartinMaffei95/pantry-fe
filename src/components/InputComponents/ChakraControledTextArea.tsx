@@ -14,8 +14,8 @@ interface Props extends InputProps {
   value: string;
   handleChange: ReactEventHandler<HTMLTextAreaElement>;
   handleBlur: FocusEventHandler<HTMLTextAreaElement>;
-  touched: boolean | undefined;
-  error: string | undefined;
+  touched?: boolean | undefined;
+  error?: string | undefined;
   extraCss?: string;
 }
 const ChakraControledTextArea: FC<Props> = ({
@@ -38,7 +38,6 @@ const ChakraControledTextArea: FC<Props> = ({
         {label}
       </FormLabel>
       <Textarea
-        isInvalid
         value={value}
         name={name}
         onBlur={handleBlur}
