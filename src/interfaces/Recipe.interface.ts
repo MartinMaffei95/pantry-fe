@@ -1,3 +1,5 @@
+import { Product, ProductFromAPI } from "./Product.interface";
+
 //  RECIPE USED IN APP
 export interface Recipe {
   id: number;
@@ -39,11 +41,6 @@ export interface RecipeIngredient {
   resultOf?: RecipeDetails;
 }
 
-export interface Product {
-  id: number;
-  name: string;
-  type: string;
-}
 
 // RECIPES FROM API
 export interface RecipeFromApi {
@@ -82,15 +79,11 @@ export interface RecipeIngredientFromApi {
   id: number;
   measurement_type: string;
   measurement_quantity: number;
-  product: Product;
+  product: ProductFromAPI;
   resultOf?: RecipeDetailsFromApi;
 }
 
-export interface ProductFromApi {
-  id: number;
-  name: string;
-  type: string;
-}
+
 
 // ##  NEW RECIPE FORM
 

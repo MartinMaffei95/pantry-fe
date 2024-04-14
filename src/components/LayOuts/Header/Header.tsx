@@ -10,7 +10,6 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  Input,
   useDisclosure,
 } from "@chakra-ui/react";
 import { AiOutlineMenu } from "react-icons/ai";

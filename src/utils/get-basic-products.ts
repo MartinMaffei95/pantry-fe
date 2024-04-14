@@ -1,4 +1,3 @@
-import { RecipeProduct } from "../interfaces";
 
 export const getBasicProducts = (products: any[]) => {
   console.log(products);

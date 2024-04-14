@@ -30,7 +30,7 @@ export default class ProductService {
 
   async addProduct(data: AddProductForm) {
     try {
-      const request = await axios({
+     await axios({
         baseURL: `${import.meta.env.VITE_BASE_URL}/product`,
         method: "POST",
         data: data,

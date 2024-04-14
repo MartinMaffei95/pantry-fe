@@ -6,7 +6,7 @@ type Props = {};
 const Home: FC<Props> = ({}) => {
   const productsService = new ProductService();
 
-  const { status, response, executeRequest } = useApiRequest(() =>
+  const { executeRequest } = useApiRequest(() =>
     productsService.getAllProducts()
   );
 

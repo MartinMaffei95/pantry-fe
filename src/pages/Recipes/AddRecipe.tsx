@@ -1,9 +1,8 @@
-import { FC, FocusEvent, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import Title from "../../components/Generics/Title/Title";
 import Paper from "../../components/Generics/Paper/Paper";
 import ChakraControled from "../../components/InputComponents/ChakraControled";
 import {
-  AddProductForm,
   AddRecipeForm,
   Product,
   RecipeMeasurement,
@@ -43,9 +42,7 @@ import RecipeService from "../../services/Recipe.service";
 import ChakraControledNumber from "../../components/InputComponents/ChakraControledNumber";
 import ChakraControlledSelect from "../../components/InputComponents/ChakraControlledSelect";
 
-import type { DNDPlugin } from "@formkit/drag-and-drop";
   import { useDragAndDrop } from "@formkit/drag-and-drop/react";
-  import { parents, addEvents } from "@formkit/drag-and-drop";
   import { handleEnd } from "@formkit/drag-and-drop";
 
 type Props = {};
@@ -61,35 +58,34 @@ const AddRecipe: FC<Props> = ({}) => {
 
   const recipeService = new RecipeService();
 
-  const recipeApi = useApiRequest((newrecipe: AddRecipeForm) =>
-    recipeService.createRecipe(newrecipe)
-  );
+  // const recipeApi = useApiRequest((newrecipe: AddRecipeForm) =>
+  //   recipeService.createRecipe(newrecipe)
+  // );
 
   const [loading, setLoading] = useState<boolean>(false);
 
   type RecipeIngredientsForm = {
-    product: string;
+    product: number;
     productName: string;
     measurement: RecipeMeasurement;
   };
   const [partialIngredient, setPartialIngredient] =
     useState<RecipeIngredientsForm>({
       measurement: { measurement: "gr", quantity: 0 },
-      product: "",
+      product: 0,
       productName: "",
     });
   const [ingredients, setIngredients] = useState<RecipeIngredientsForm[]>([]);
-  const [finalProduct, setFinalProduct] = useState<Product>({});
 
-  const deleteIngredient = (id: string) => {
-    const filteredIngredients = ingredients.filter(
-      (ingredient) => ingredient.product !== id
-    );
+  // const deleteIngredient = (id: string) => {
+  //   const filteredIngredients = ingredients.filter(
+  //     (ingredient) => ingredient.product !== id
+  //   );
 
-    if (!filteredIngredients) return;
+  //   if (!filteredIngredients) return;
 
-    setIngredients(() => filteredIngredients);
-  };
+  //   setIngredients(() => filteredIngredients);
+  // };
 
   const preparePartialCharge = (product: Product) => {
     const ingredient: RecipeIngredientsForm = {
@@ -121,16 +117,11 @@ const AddRecipe: FC<Props> = ({}) => {
       },
     },
   };
-  const selectResult: <Product>(res: Product) => void = (res) => {
-    console.log(res);
+  const selectResult: (res: Product) => void = (res) => {
     preparePartialCharge(res);
   };
 
-  const selectFinalProduct: (res: Product) => void = (res) => {
-    console.log(res.id);
-    setFinalProduct(res);
-    setFieldValue("result.product", res.id);
-  };
+
 
   const onSubmit = async () => {
     setLoading(true);
@@ -171,7 +162,7 @@ const AddRecipe: FC<Props> = ({}) => {
   ];
 
   const addIngredient = (
-    productId: string,
+    productId: number,
     productName: string,
     measurement: string,
     quantity: number
@@ -200,7 +191,7 @@ const AddRecipe: FC<Props> = ({}) => {
     searchNewIngredientRef?.current?.clearSearch();
     setPartialIngredient({
       measurement: { measurement: "gr", quantity: 0 },
-      product: "",
+      product: 0,
       productName: "",
     });
   };
@@ -477,7 +468,7 @@ const SetpsList = ({
     return stepsWithOrder;
   };
 
-  const [parent, steps, setSteps] = useDragAndDrop<HTMLUListElement, StepForm>(
+  const [parent, steps, setSteps] = useDragAndDrop<HTMLDivElement, StepForm>(
     [],
     { 
       async handleEnd(data) {

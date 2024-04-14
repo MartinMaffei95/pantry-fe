@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import Title from "../../components/Generics/Title/Title";
 import Paper from "../../components/Generics/Paper/Paper";
 import ChakraControled from "../../components/InputComponents/ChakraControled";
-import { AddProductForm, Product } from "../../interfaces";
+import { AddProductForm } from "../../interfaces";
 import { addProductValidationSchema } from "./config/add-product-form";
 import { useFormik } from "formik";
 import ChakraControlledSelect from "../../components/InputComponents/ChakraControlledSelect";

@@ -1,9 +1,8 @@
 import axios, { AxiosError } from "axios";
-import { PaginatedData, Product } from "../interfaces";
+import { PaginatedData } from "../interfaces";
 import { AddRecipeForm, Recipe } from "../interfaces/Recipe.interface";
 import {
   adaptRecipeDetailsFromAPI,
-  adaptRecipeFromAPI,
   adaptRecipesFromAPI,
 } from "../adapters/Recipe.adapter";
 
@@ -47,7 +46,7 @@ export default class RecipeService {
   }
   async createRecipe(data: AddRecipeForm) {
     try {
-      const request = await axios({
+      await axios({
         baseURL: `${import.meta.env.VITE_BASE_URL}/recipe`,
         method: "POST",
         data: data,

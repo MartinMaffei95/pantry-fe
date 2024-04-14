@@ -2,18 +2,17 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input,
   InputProps,
   Textarea,
 } from "@chakra-ui/react";
-import { FC, FocusEventHandler, ReactEventHandler } from "react";
+import { ChangeEventHandler, FC, FocusEventHandler } from "react";
 
 interface Props extends InputProps {
   label: string;
   name: string;
   value: string;
-  handleChange: ReactEventHandler<HTMLTextAreaElement>;
-  handleBlur: FocusEventHandler<HTMLTextAreaElement>;
+  handleChange: ChangeEventHandler<HTMLTextAreaElement>;
+  handleBlur:FocusEventHandler<HTMLTextAreaElement>;
   touched?: boolean | undefined;
   error?: string | undefined;
   extraCss?: string;
@@ -27,7 +26,6 @@ const ChakraControledTextArea: FC<Props> = ({
   touched,
   error,
   extraCss = "",
-  ...props
 }) => {
   return (
     <FormControl
@@ -42,7 +40,6 @@ const ChakraControledTextArea: FC<Props> = ({
         name={name}
         onBlur={handleBlur}
         onChange={handleChange}
-        {...props}
       />
       <FormErrorMessage>{error}</FormErrorMessage>
     </FormControl>

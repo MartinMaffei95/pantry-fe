@@ -3,7 +3,7 @@ import { FaReceipt } from "react-icons/fa";
 import { RecipeIngredient } from "../../interfaces";
 import { Link } from "react-router-dom";
 
-type Props = { id: string; name: string; ingredients: RecipeIngredient[] };
+type Props = { id: number; name: string; ingredients: RecipeIngredient[] };
 const RecipeCard: FC<Props> = ({ id, name, ingredients }) => {
   return (
     <Link

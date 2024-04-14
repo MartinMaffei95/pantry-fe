@@ -40,7 +40,7 @@ export const IngredientsList: FC<Props> = ({
                 >
                   {deepIngr?.resultOf
                     ? deepIngr?.resultOf?.ingredients?.map(
-                        (resultOfIngredient, i) => (
+                        (resultOfIngredient) => (
                           <>
                             {resultOfIngredient.resultOf ? (
                               <li>SI</li>

@@ -2,7 +2,6 @@ import {
   ChangeEvent,
   ComponentType,
   FC,
-  MutableRefObject,
   forwardRef,
   useEffect,
   useImperativeHandle,
@@ -12,7 +11,7 @@ import {
 import { Input } from "@chakra-ui/react";
 import { debounce } from "lodash";
 import LoadingWrapper from "../Loader/LoadingWrapper";
-import { Product, UseApiRequestStatus } from "../../interfaces";
+import {  UseApiRequestStatus } from "../../interfaces";
 import { ApiResponse } from "../../hooks/useApiRequest";
 import { TbMoodSadSquint } from "react-icons/tb";
 interface ListItemProps<T> {
@@ -27,6 +26,7 @@ interface Props<T> {
   executeRequest: any;
   ListItem: ComponentType<ListItemProps<T>>;
   extraQuery?: string;
+  ref:any
 }
 const SearchBar: FC<Props<any>> = forwardRef(
   (
@@ -49,8 +49,8 @@ const SearchBar: FC<Props<any>> = forwardRef(
 
     const [searchValue, setSearchValue] = useState<string>("");
     const [showResults, setShowResults] = useState<boolean>(false);
-    const [results, setResults] = useState<any[]>([]);
-    const [selectedResult, setSelectedResult] = useState();
+    const [_results, setResults] = useState<any[]>([]);
+    const [_selectedResult, setSelectedResult] = useState();
 
     const selectResult = (result: any) => {
       onSelectResult(result);
@@ -96,7 +96,8 @@ const SearchBar: FC<Props<any>> = forwardRef(
           <ul className="rounded-b-lg min-w-52  overflow-hidden absolute w-full bg-white left-0">
             <LoadingWrapper status={status}>
               {response?.data?.data?.length > 0 ? (
-                response.data?.data.map((res) => (
+                // TODO: Change the type
+                response.data?.data.map((res:any) => (
                   <ListItem
                     key={res.id}
                     res={res}
