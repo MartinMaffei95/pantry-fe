@@ -446,14 +446,12 @@ const SetpsList = ({
 
   const addStep = () => {
     const step = newStep;
-    console.log(step);
     setSteps((state) => [...state, { text: step.text, title: step.title,order:step.order}]);
     setFieldValue("steps", [...values?.steps, step]);
 
     setNewStep({ text: "", title: "",order:steps?.length });
   };
   const calculateStepsOrder = (steps: StepForm[]): StepRecipeForApi[] => {
-    console.log("[STEPS] - [INIT]",steps)
     const stepsWithOrder: StepRecipeForApi[] = [];
 
     steps.map((step, i) => {
