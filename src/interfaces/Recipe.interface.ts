@@ -1,100 +1,126 @@
-import { Product } from "./Product.interface";
-import { ProductFromAPI } from ".";
-
+//  RECIPE USED IN APP
 export interface Recipe {
-  id: string;
+  id: number;
   name: string;
-  ingredients: RecipeIngredientWithReplacement[];
   steps: any[];
-  result: RecipeResult;
+  result: Result;
+  ingredients: RecipeIngredient[];
+}
+
+export interface Result {
+  id: number;
+  result_measurement: string;
+  result_weight: number;
+  portions_measurement: string;
+  portions_quantity: number;
+  portions_weight: number;
 }
 
 export interface RecipeIngredient {
-  product: RecipeProduct;
-  measurement: RecipeMeasurementFromAPI;
+  id: number;
+  measurement_type: string;
+  measurement_quantity: number;
 }
 
-export interface RecipeIngredientWithReplacement extends RecipeIngredient {
-  replace_by: RecipeIngredient[];
-}
-export interface RecipeMeasurement {
-  meassurement: string;
-  quantity: number;
+// RECIPE DETAILS USED IN APP
+
+export interface RecipeDetails {
+  id: number;
+  name: string;
+  ingredients: RecipeIngredient[];
+  result: Result;
 }
 
-export interface RecipeResult {
-  product: RecipeProduct;
-  yield: RecipeMeasurement;
-  portion: RecipePortion;
+export interface RecipeIngredient {
+  id: number;
+  measurement_type: string;
+  measurement_quantity: number;
+  product: Product;
+  resultOf?: RecipeDetails;
 }
 
-export interface RecipeProduct {
-  id: string;
+export interface Product {
+  id: number;
   name: string;
   type: string;
-  resultOf?: Recipe | undefined;
 }
 
-export interface RecipePortion extends RecipeMeasurement {
-  weight: number;
-}
-
-// ##  FROM API>
-
-export interface RecipeFromAPI {
-  _id: string;
+// RECIPES FROM API
+export interface RecipeFromApi {
+  id: number;
   name: string;
-  ingredients: RecipeIngredientWithReplacementFromAPI[];
   steps: any[];
-  result: RecipeResultFromAPI;
-  __v: number;
+  result: ResultFromApi;
+  ingredients: RecipeIngredientFromApi[];
 }
 
-export interface RecipeIngredientFromAPI {
-  product: RecipeProductFromAPI;
-  measurement: RecipeMeasurementFromAPI;
+export interface ResultFromApi {
+  id: number;
+  result_measurement: string;
+  result_weight: number;
+  portions_measurement: string;
+  portions_quantity: number;
+  portions_weight: number;
 }
 
-export interface RecipeIngredientWithReplacementFromAPI
-  extends RecipeIngredientFromAPI {
-  replace_by: RecipeIngredientFromAPI[];
+export interface RecipeIngredientFromApi {
+  id: number;
+  measurement_type: string;
+  measurement_quantity: number;
 }
 
-export interface RecipeProductFromAPI {
-  _id: string;
+// RECIPE DETAILS  FROM API
+
+export interface RecipeDetailsFromApi {
+  id: number;
+  name: string;
+  ingredients: RecipeIngredientFromApi[];
+  result: ResultFromApi;
+}
+
+export interface RecipeIngredientFromApi {
+  id: number;
+  measurement_type: string;
+  measurement_quantity: number;
+  product: Product;
+  resultOf?: RecipeDetailsFromApi;
+}
+
+export interface ProductFromApi {
+  id: number;
   name: string;
   type: string;
-  __v: number;
-  resultOf?: RecipeFromAPI | undefined;
-}
-
-export interface RecipeMeasurementFromAPI {
-  meassurement: string;
-  quantity: number;
-}
-
-export interface RecipeResultFromAPI {
-  product: RecipeProductFromAPI;
-  yield: RecipeMeasurementFromAPI;
-  portion: RecipePortionFromAPI;
-}
-
-export interface RecipePortionFromAPI extends RecipeMeasurementFromAPI {
-  weight: number;
 }
 
 // ##  NEW RECIPE FORM
 
+export type StepForm = Pick<StepRecipeForApi,"title" | "text" | "order">
+
+export interface StepRecipeForApi {
+  title: string;
+  text: string;
+  order: number;
+}
+
 export interface AddRecipeForm {
   name: string;
   ingredients: {
-    product: string;
+    product: number;
     measurement: RecipeMeasurement;
   }[];
-  steps: string[];
+  steps: StepForm[];
   result: {
     product: string;
     yield: RecipeMeasurement;
     portion: RecipePortion;
   };
+}
+
+export interface RecipeMeasurement {
+  measurement: string;
+  quantity: number;
+}
+
+export interface RecipePortion extends RecipeMeasurement {
+  weight: number;
 }

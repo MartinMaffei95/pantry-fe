@@ -1,24 +1,31 @@
 import axios, { AxiosError } from "axios";
-import { adaptProductsFromAPI } from "../adapters/Product.adapter";
 import { PaginatedData, Product } from "../interfaces";
 import { AddRecipeForm, Recipe } from "../interfaces/Recipe.interface";
 import {
+  adaptRecipeDetailsFromAPI,
   adaptRecipeFromAPI,
   adaptRecipesFromAPI,
 } from "../adapters/Recipe.adapter";
 
 export default class RecipeService {
-  async getAllRecipes() {
+  async getAllRecipes(page?:number|null,limit?:number|null) {
+    if(!page){
+      page = 1
+    }
+    if(!limit){
+      limit = 5
+    }
     try {
       const request = await axios({
-        baseURL: `${import.meta.env.VITE_BASE_URL}/recipe`,
+        baseURL: `${import.meta.env.VITE_BASE_URL}/recipe?offset=${page}&limit=${limit}`,
         method: "GET",
       });
-      const adaptedData = adaptRecipesFromAPI(request.data.data);
+      const adaptedData = adaptRecipesFromAPI(request?.data?.data);
       const paginatedData: PaginatedData<Recipe[]> = {
         data: adaptedData,
-        pagination: request.data.pagination,
+        pagination: request?.data?.pagination,
       };
+      console.log("PAGINATION" , request?.data?.pagination)
       return paginatedData;
     } catch (error: any | AxiosError) {
       throw new Error("ROMPIDO");
@@ -31,7 +38,7 @@ export default class RecipeService {
         method: "GET",
       });
 
-      const adaptedData = adaptRecipeFromAPI(request.data);
+      const adaptedData = adaptRecipeDetailsFromAPI(request.data);
 
       return adaptedData;
     } catch (error: any | AxiosError) {

@@ -1,5 +1,5 @@
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   type: ProductType;
 }
@@ -7,7 +7,7 @@ export interface Product {
 export type ProductType = "BASIC" | "ELABORATED";
 
 export interface ProductFromAPI {
-  _id: string;
+  id: number;
   name: string;
   type: ProductType;
   __v: number;

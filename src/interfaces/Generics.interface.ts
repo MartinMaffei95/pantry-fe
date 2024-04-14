@@ -5,8 +5,8 @@ export interface PaginationInfo {
   perPage: number;
   totalPages: number;
   totalProducts: number;
-  nextPage: string | null;
-  prevPage: string | null;
+  nextPage: number | null;
+  prevPage: number | null;
 }
 
 export type PaginatedData<Data> = {

@@ -22,15 +22,23 @@ const Header: FC<Props> = ({}) => {
 
   return (
     <header className="h-16 w-full bg-orange-500 text-green-800 flex justify-between items-center shadow-md">
-      <div onClick={() => navigate("/")} className="px-4 py-2 gap-2 flex">
-        <PiBowlFoodDuotone className=" text-3xl m-auto text-neutral-50" />
+      <div onClick={() => navigate("/")} className="px-4 py-2 gap-2 flex w-full justify-between">
+        {/* Logo */}
+        <div className="px-4 py-2 gap-2 flex "> 
+          <PiBowlFoodDuotone className=" text-3xl m-auto text-neutral-50" />
         <p className="font-bold tracking-widest flex flex-col items-center justify-center">
           <span>chef's</span>
           <span>selection</span>
         </p>
-        <Button colorScheme="blackAlpha" onClick={onOpen}>
-          <AiOutlineMenu />
-        </Button>
+        </div>
+        {/* LATERAL MENU BTN */}
+        <div className="px-4 gap-2 flex items-center justify-center">   
+          <Button colorScheme="blackAlpha" onClick={onOpen}>
+            <AiOutlineMenu />
+          </Button>
+        </div>
+       
+     
       </div>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />

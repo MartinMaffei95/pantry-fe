@@ -2,7 +2,7 @@ import { Product, ProductFromAPI } from "../interfaces";
 
 export const adaptProductFromAPI = (product: ProductFromAPI): Product => {
   const adaptedProduct: Product = {
-    id: product._id,
+    id: product.id,
     name: product.name,
     type: product.type,
   };

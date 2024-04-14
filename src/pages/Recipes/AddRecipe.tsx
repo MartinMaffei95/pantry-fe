@@ -7,6 +7,8 @@ import {
   AddRecipeForm,
   Product,
   RecipeMeasurement,
+  StepForm,
+  StepRecipeForApi,
 } from "../../interfaces";
 import { useFormik } from "formik";
 import ProductService from "../../services/Product.service";
@@ -40,6 +42,12 @@ import ChakraControledTextArea from "../../components/InputComponents/ChakraCont
 import RecipeService from "../../services/Recipe.service";
 import ChakraControledNumber from "../../components/InputComponents/ChakraControledNumber";
 import ChakraControlledSelect from "../../components/InputComponents/ChakraControlledSelect";
+
+import type { DNDPlugin } from "@formkit/drag-and-drop";
+  import { useDragAndDrop } from "@formkit/drag-and-drop/react";
+  import { parents, addEvents } from "@formkit/drag-and-drop";
+  import { handleEnd } from "@formkit/drag-and-drop";
+
 type Props = {};
 const AddRecipe: FC<Props> = ({}) => {
   const productsService = new ProductService();
@@ -58,8 +66,6 @@ const AddRecipe: FC<Props> = ({}) => {
   );
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [steps, setSteps] = useState<string[]>([]);
-  const [newStep, setNewStep] = useState<string>("");
 
   type RecipeIngredientsForm = {
     product: string;
@@ -68,7 +74,7 @@ const AddRecipe: FC<Props> = ({}) => {
   };
   const [partialIngredient, setPartialIngredient] =
     useState<RecipeIngredientsForm>({
-      measurement: { meassurement: "gr", quantity: 0 },
+      measurement: { measurement: "gr", quantity: 0 },
       product: "",
       productName: "",
     });
@@ -90,7 +96,7 @@ const AddRecipe: FC<Props> = ({}) => {
       product: product.id,
       productName: product.name,
       measurement: {
-        meassurement: "gr",
+        measurement: "gr",
         quantity: 0,
       },
     };
@@ -105,12 +111,12 @@ const AddRecipe: FC<Props> = ({}) => {
     result: {
       product: "",
       yield: {
-        meassurement: "gr",
+        measurement: "gr",
         quantity: 0,
       },
       portion: {
         weight: 0,
-        meassurement: "gr",
+        measurement: "gr",
         quantity: 0,
       },
     },
@@ -128,17 +134,19 @@ const AddRecipe: FC<Props> = ({}) => {
 
   const onSubmit = async () => {
     setLoading(true);
+
     try {
-      const response = await recipeService.createRecipe(values);
-      if (response === "SUCCESS") {
-        resetForm();
-      }
-      sendSnackbar.success("Su producto fue creado");
+     
+       const response = await recipeService.createRecipe(values);
+       if (response === "SUCCESS") {
+         resetForm();
+       }
+       sendSnackbar.success("Su producto fue creado");
 
       setLoading(false);
     } catch (err) {
-      setLoading(false);
-      sendSnackbar.error("Ocurrio un error");
+       setLoading(false);
+       sendSnackbar.error("Ocurrio un error");
     }
   };
   const {
@@ -161,18 +169,11 @@ const AddRecipe: FC<Props> = ({}) => {
     { label: "ml.", value: "ml" },
     { label: "unid.", value: "un" },
   ];
-  const addStep = () => {
-    const step = newStep;
-    setSteps((state) => [...state, step]);
-    setFieldValue("steps", [...values?.steps, step]);
-
-    setNewStep("");
-  };
 
   const addIngredient = (
     productId: string,
     productName: string,
-    meassurement: string,
+    measurement: string,
     quantity: number
   ) => {
     if (quantity <= 0 || !productId) return;
@@ -180,7 +181,7 @@ const AddRecipe: FC<Props> = ({}) => {
       product: productId,
       productName: productName,
       measurement: {
-        meassurement: meassurement,
+        measurement: measurement,
         quantity: quantity,
       },
     };
@@ -191,18 +192,22 @@ const AddRecipe: FC<Props> = ({}) => {
       {
         product: productId,
         measurement: {
-          meassurement: meassurement,
+          measurement: measurement,
           quantity: quantity,
         },
       },
     ]);
     searchNewIngredientRef?.current?.clearSearch();
     setPartialIngredient({
-      measurement: { meassurement: "gr", quantity: 0 },
+      measurement: { measurement: "gr", quantity: 0 },
       product: "",
       productName: "",
     });
   };
+
+
+
+
   return (
     <>
       <Title>Nueva receta</Title>
@@ -213,6 +218,7 @@ const AddRecipe: FC<Props> = ({}) => {
           </div>
         ) : null}
         <button onClick={() => console.log(errors)}>VER ERR</button>
+        {JSON.stringify(values)}
         <form onSubmit={handleSubmit} className="">
           <ChakraControled
             label="Nombre de  la receta: "
@@ -260,11 +266,11 @@ const AddRecipe: FC<Props> = ({}) => {
                     ...state,
                     measurement: {
                       ...state.measurement,
-                      meassurement: e.target.value,
+                      measurement: e.target.value,
                     },
                   }))
                 }
-                value={partialIngredient.measurement.meassurement}
+                value={partialIngredient.measurement.measurement}
               >
                 {options.map((opt) => (
                   <option value={opt.value}>{opt.label}</option>
@@ -282,7 +288,7 @@ const AddRecipe: FC<Props> = ({}) => {
                     addIngredient(
                       partialIngredient.product,
                       partialIngredient.productName,
-                      partialIngredient.measurement.meassurement,
+                      partialIngredient.measurement.measurement,
                       partialIngredient.measurement.quantity
                     )
                   }
@@ -310,7 +316,7 @@ const AddRecipe: FC<Props> = ({}) => {
                     <Tr>
                       <Td>{ingredient.productName} </Td>
                       <Td>{ingredient.measurement.quantity}</Td>
-                      <Td>{ingredient.measurement.meassurement}</Td>
+                      <Td>{ingredient.measurement.measurement}</Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -328,40 +334,7 @@ const AddRecipe: FC<Props> = ({}) => {
             </TableContainer>
           ) : null}
 
-          <div className="flex flex-col gap-4">
-            <Title>Pasos:</Title>
-
-            <Accordion allowMultiple>
-              {steps.map((step, index) => (
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box as="span" flex="1" textAlign="left">
-                        Paso {index + 1}
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>{step}</AccordionPanel>
-                </AccordionItem>
-              ))}
-            </Accordion>
-
-            <ChakraControledTextArea
-              label={`Paso ${steps?.length + 1}`}
-              name="name"
-              value={newStep}
-              handleChange={(e) => setNewStep(e.currentTarget.value)}
-              handleBlur={(e) => setNewStep(e.currentTarget.value)}
-              variant="outline"
-              borderColor={"black"}
-              background={"whiteAlpha.900"}
-              isInvalid={false}
-            />
-            <Button onClick={addStep} colorScheme="green">
-              Agregar
-            </Button>
-          </div>
+          <SetpsList setFieldValue={setFieldValue} values={values} />
 
           <div>
             <Title>Resultado final:</Title>
@@ -391,7 +364,7 @@ const AddRecipe: FC<Props> = ({}) => {
             <Title as="h3">Cantidad final por receta:</Title>
             <div className="flex gap-2 flex-col">
               <ChakraControledNumber
-                label="Peso por porcion "
+                label="Peso resultante"
                 name="result.yield.quantity"
                 value={values?.result?.yield?.quantity}
                 error={errors?.result?.yield?.quantity}
@@ -403,11 +376,11 @@ const AddRecipe: FC<Props> = ({}) => {
                 min={1}
               />
               <ChakraControlledSelect
-                name="result.yield.meassurement"
+                name="result.yield.measurement"
                 label="Unidad de medida:"
-                value={values?.result?.yield?.meassurement}
-                error={errors?.result?.yield?.meassurement}
-                touched={touched?.result?.yield?.meassurement}
+                value={values?.result?.yield?.measurement}
+                error={errors?.result?.yield?.measurement}
+                touched={touched?.result?.yield?.measurement}
                 options={options}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
@@ -441,11 +414,11 @@ const AddRecipe: FC<Props> = ({}) => {
                 min={1}
               />
               <ChakraControlledSelect
-                name="result.portion.meassurement"
+                name="result.portion.measurement"
                 label="Unidad de medida:"
-                value={values?.result?.portion?.meassurement}
-                error={errors?.result?.portion?.meassurement}
-                touched={touched?.result?.portion?.meassurement}
+                value={values?.result?.portion?.measurement}
+                error={errors?.result?.portion?.measurement}
+                touched={touched?.result?.portion?.measurement}
                 options={options}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
@@ -466,3 +439,93 @@ const AddRecipe: FC<Props> = ({}) => {
 };
 
 export default AddRecipe;
+
+const SetpsList = ({
+  setFieldValue,
+  values,
+}: {
+  setFieldValue: any;
+  values: AddRecipeForm;
+}) => {
+  const [newStep, setNewStep] = useState<StepForm>({
+    title: "",
+    text: "",
+    order:1
+  });
+
+  const addStep = () => {
+    const step = newStep;
+    console.log(step);
+    setSteps((state) => [...state, { text: step.text, title: step.title,order:step.order}]);
+    setFieldValue("steps", [...values?.steps, step]);
+
+    setNewStep({ text: "", title: "",order:steps?.length });
+  };
+  const calculateStepsOrder = (steps: StepForm[]): StepRecipeForApi[] => {
+    console.log("[STEPS] - [INIT]",steps)
+    const stepsWithOrder: StepRecipeForApi[] = [];
+
+    steps.map((step, i) => {
+      const stepWithOrder: StepRecipeForApi = {
+        ...step,
+        order: i + 1,
+      };
+      stepsWithOrder.push(stepWithOrder);
+    });
+    console.log("[stepsWithOrder] ",stepsWithOrder)
+
+    return stepsWithOrder;
+  };
+
+  const [parent, steps, setSteps] = useDragAndDrop<HTMLUListElement, StepForm>(
+    [],
+    { 
+      async handleEnd(data) {
+      const orderedSteps = calculateStepsOrder(steps)
+      await setFieldValue("steps",  orderedSteps);
+      handleEnd(data);
+    } 
+
+  }
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Title>Pasos:</Title>
+      <Accordion ref={parent} allowMultiple>
+        {steps.map((step, index) => (
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box as="span" flex="1" textAlign="left">
+                  Paso {index + 1}
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>{step.text}</AccordionPanel>
+          </AccordionItem>
+        ))}
+      </Accordion>
+
+      <ChakraControledTextArea
+        label={`Paso ${steps?.length + 1}`}
+        name="name"
+        value={newStep.text}
+        handleChange={(e) =>
+          setNewStep({ title: "", text: e.currentTarget.value, order:steps.length+1})
+        }
+        handleBlur={(e) =>
+          setNewStep({ title: "", text: e.currentTarget.value, order:steps.length+1})
+        }
+        variant="outline"
+        borderColor={"black"}
+        background={"whiteAlpha.900"}
+        isInvalid={false}
+      />
+      <Button onClick={addStep} colorScheme="green">
+        Agregar
+      </Button>
+    </div>
+  );
+};

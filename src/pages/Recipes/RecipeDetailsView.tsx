@@ -4,7 +4,7 @@ import { useApiRequest } from "../../hooks/useApiRequest";
 import RecipeService from "../../services/Recipe.service";
 import LoadingWrapper from "../../components/Loader/LoadingWrapper";
 import Paper from "../../components/Generics/Paper/Paper";
-import NecesaryIngredients from "./components/NecesaryIngredients";
+import NecesaryIngredients from "./components/NecesaryIngredients/NecesaryIngredients";
 import { calculateByPortions } from "../../utils/calculate-by-portions";
 import Title from "../../components/Generics/Title/Title";
 import { FaCalculator } from "react-icons/fa";
@@ -23,7 +23,7 @@ const RecipeDetailsView: FC<Props> = ({}) => {
   useEffect(() => {
     if (id) {
       executeRequest(id);
-      setPortions(response.data?.result?.portion?.quantity || 0);
+      // setPortions(response.data?.result?.portion?.quantity || 0);
     }
   }, []);
 
@@ -37,27 +37,29 @@ const RecipeDetailsView: FC<Props> = ({}) => {
       >
         <>
           <Paper>
-            <NecesaryIngredients
+             <NecesaryIngredients
               ingredients={response.data?.ingredients || []}
-            />
+              
+            /> 
           </Paper>
           <Paper>
             <Title as="h3">Resultado</Title>
 
-            <div>{response.data?.result?.product?.name}</div>
+            {/* <div>{response.data?.result?.product?.name}</div> */}
             <div className="flex gap-4">
               Peso final:
               <div>
-                {response.data?.result?.yield.quantity}
-                {response.data?.result?.yield.meassurement}
+               {response.data?.result?.result_weight}
+               {response.data?.result?.result_measurement}
               </div>
             </div>
             <div className="flex gap-4">
               Rinde:
               <div>
-                {response.data?.result?.portion.quantity} Porciones x
-                {response.data?.result?.portion.weight}
-                {response.data?.result?.portion.meassurement}
+                {response.data?.result?.portions_quantity} Porciones x
+                {response.data?.result?.portions_weight}
+                {response.data?.result?.portions_measurement}
+
               </div>
             </div>
           </Paper>
@@ -75,28 +77,29 @@ const RecipeDetailsView: FC<Props> = ({}) => {
                 }
                 value={portions}
                 type="number"
-              />
+              /> *
             </div>
-            <NecesaryIngredients
+             <NecesaryIngredients
               ingredients={response.data?.ingredients || []}
               valuesToCalculate={{
-                portionsByRecipe: response.data?.result?.portion?.quantity,
+                portionsByRecipe: response.data?.result?.portions_quantity,
                 wantedPortions: portions,
+                totalWeightOfRecipe:response.data?.result?.result_weight
               }}
-            />
+            /> 
             <div className="border-t-2 border-neutral-500  flex justify-between mt-1 px-2 font-semibold">
               Peso final:
-              <div className="flex gap-2">
+             <div className="flex gap-2">
                 <span>
-                  {response.data?.result?.yield.quantity &&
+                  {response.data?.result?.result_weight &&
                     calculateByPortions(
-                      response.data?.result?.yield.quantity,
-                      response.data?.result?.portion?.quantity,
-                      portions
+                      response.data?.result?.result_weight,
+                      response.data?.result?.portions_quantity,
+                      portions,
                     )}
                 </span>
-                <span>{response.data?.result?.yield.meassurement}.</span>
-              </div>
+                <span>{response.data?.result?.result_measurement}.</span>
+              </div> 
             </div>
           </Paper>
         </>

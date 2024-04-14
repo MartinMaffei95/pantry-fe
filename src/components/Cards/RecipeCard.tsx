@@ -13,7 +13,7 @@ const RecipeCard: FC<Props> = ({ id, name, ingredients }) => {
       <FaReceipt />
       <div>
         <p key={id}>
-          {name} - Ingredientes: {ingredients.length}
+          {name} - Ingredientes: {ingredients?.length}
         </p>
       </div>
     </Link>

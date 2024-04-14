@@ -3,10 +3,17 @@ import { adaptProductsFromAPI } from "../adapters/Product.adapter";
 import { AddProductForm, PaginatedData, Product } from "../interfaces";
 
 export default class ProductService {
-  async getAllProducts() {
+  async getAllProducts(page?:number|null,limit?:number|null) {
+    if(!page){
+      page = 1
+    }
+    if(!limit){
+      limit = 10
+    }
+
     try {
       const request = await axios({
-        baseURL: `${import.meta.env.VITE_BASE_URL}/product`,
+        baseURL: `${import.meta.env.VITE_BASE_URL}/product?offset=${page}&limit=${limit}`,
         method: "GET",
       });
 

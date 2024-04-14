@@ -1,17 +1,14 @@
 import {
-  RecipeIngredient,
   Recipe,
-  RecipeFromAPI,
-  RecipeIngredientFromAPI,
-  RecipeIngredientWithReplacement,
-  RecipeIngredientWithReplacementFromAPI,
-  RecipeProduct,
-  RecipeProductFromAPI,
-  RecipeResult,
-  RecipeResultFromAPI,
+  RecipeDetails,
+  RecipeDetailsFromApi,
+  RecipeFromApi,
+  RecipeIngredient,
+  RecipeIngredientFromApi,
 } from "../interfaces";
 
-export const adaptRecipesFromAPI = (recipes: RecipeFromAPI[]): Recipe[] => {
+export const adaptRecipesFromAPI = (recipes: RecipeFromApi[]): Recipe[] => {
+  console.log(recipes)
   let adaptedRecipes: Recipe[] = [];
 
   recipes.forEach((recipe) => {
@@ -22,64 +19,57 @@ export const adaptRecipesFromAPI = (recipes: RecipeFromAPI[]): Recipe[] => {
   return adaptedRecipes;
 };
 
-export const adaptRecipeFromAPI = (recipe: RecipeFromAPI): Recipe => {
-  if (typeof recipe === "string") return recipe;
+export const adaptRecipeFromAPI = (recipe: RecipeFromApi): Recipe => {
+  console.log(recipe)
+
   const adaptedRecipe: Recipe = {
-    id: recipe?._id,
+    id: recipe?.id,
     name: recipe?.name,
-    ingredients: adaptIngredientsWithReplacementFromAPI(recipe?.ingredients),
     steps: recipe?.steps,
-    result: adaptResultFromAPI(recipe?.result),
+    result: recipe.result,
+    ingredients:recipe.ingredients
+    
   };
   return adaptedRecipe;
 };
 
-const adaptIngredientsWithReplacementFromAPI = (
-  ingredients: RecipeIngredientWithReplacementFromAPI[]
-): RecipeIngredientWithReplacement[] => {
-  let adaptedIngredients: RecipeIngredientWithReplacement[] = [];
-  ingredients.forEach((ingredient) => {
-    const adaptedIngredient: RecipeIngredientWithReplacement = {
-      product: adaptProductFromAPI(ingredient.product),
-      measurement: ingredient.measurement,
-      replace_by: adaptIngredientsFromAPI(ingredient.replace_by),
-    };
-    adaptedIngredients.push(adaptedIngredient);
-  });
-  return adaptedIngredients;
-};
+// RECIPES DETAILS
 
-const adaptIngredientsFromAPI = (
-  ingredients: RecipeIngredientFromAPI[]
-): RecipeIngredient[] => {
-  let adaptedIngredients: RecipeIngredient[] = [];
-  ingredients.forEach((ingredient) => {
-    const adaptedIngredient: RecipeIngredient = {
-      product: adaptProductFromAPI(ingredient?.product),
-      measurement: ingredient?.measurement,
-    };
-    adaptedIngredients.push(adaptedIngredient);
-  });
-  return adaptedIngredients;
-};
+export const adaptRecipeDetailsFromAPI = (recipe: RecipeDetailsFromApi): RecipeDetails => {
+  console.log(recipe)
 
-const adaptResultFromAPI = (result: RecipeResultFromAPI): RecipeResult => {
-  const adaptedResult: RecipeResult = {
-    product: adaptProductFromAPI(result?.product),
-    yield: result?.yield,
-    portion: result.portion,
+  const adaptedRecipe: RecipeDetails = {
+    id: recipe?.id,
+    name: recipe?.name,
+    ingredients: recipe.ingredients,
+    result:recipe.result
+    
   };
-  return adaptedResult;
+  return adaptedRecipe;
 };
 
-const adaptProductFromAPI = (result: RecipeProductFromAPI): RecipeProduct => {
-  const adaptedProduct: RecipeProduct = {
-    id: result?._id,
-    name: result?.name,
-    type: result?.type,
-    resultOf: result?.resultOf
-      ? adaptRecipeFromAPI(result?.resultOf)
-      : undefined,
-  };
-  return adaptedProduct;
-};
+
+export const adaptSingleRecipeDetails =(recipeIngredientsFromApi:RecipeIngredientFromApi):RecipeIngredient=>{
+
+  const adaptedIngredients:RecipeIngredient ={
+    id: recipeIngredientsFromApi.id,
+    measurement_type: recipeIngredientsFromApi.measurement_type,
+    measurement_quantity: recipeIngredientsFromApi.measurement_quantity,
+    product: recipeIngredientsFromApi.product,
+    resultOf:recipeIngredientsFromApi?.resultOf ? recipeIngredientsFromApi?.resultOf  : undefined
+  }
+  return adaptedIngredients
+}
+
+export const adaptRecipeDetails =(recipeIngredientsFromApi:RecipeIngredientFromApi[]):RecipeIngredient[]=>{
+  let adaptedrecipes:RecipeIngredient[] =[]
+
+  recipeIngredientsFromApi?.forEach(
+    recipeIngredient =>{
+        const adaptedIngredientRecipe:RecipeIngredient =adaptSingleRecipeDetails(recipeIngredient)
+        adaptedrecipes.push(adaptedIngredientRecipe)
+    }
+  )
+
+  return adaptedrecipes
+}
