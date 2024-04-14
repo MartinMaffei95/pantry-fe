@@ -42,7 +42,7 @@ import RecipeService from "../../services/Recipe.service";
 import ChakraControledNumber from "../../components/InputComponents/ChakraControledNumber";
 import ChakraControlledSelect from "../../components/InputComponents/ChakraControlledSelect";
 
-  import { useDragAndDrop } from "@formkit/drag-and-drop/react";
+import { useDragAndDrop } from "@formkit/drag-and-drop/react";
   import { handleEnd } from "@formkit/drag-and-drop";
 
 type Props = {};
